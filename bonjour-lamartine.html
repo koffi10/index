@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bonjour Madame Lamartine 🌅</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Lato', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4, #ffecd2);
+      transition: background 1s ease;
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+      min-height: 100vh;
+      width: 100%;
+      position: absolute;
+    }
+    .screen.active { display: flex; }
+
+    .card {
+      background: rgba(255,255,255,0.35);
+      border: 1px solid rgba(255,255,255,0.6);
+      border-radius: 28px;
+      padding: 2.5rem 2rem;
+      max-width: 440px;
+      width: 100%;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      animation: fadeUp 0.6s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .emoji-top {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      color: #4a2040;
+      margin-bottom: 0.8rem;
+      line-height: 1.4;
+    }
+
+    .question {
+      color: #6b3a5a;
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.9rem 2rem;
+      border-radius: 50px;
+      border: none;
+      font-family: 'Lato', sans-serif;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: bold;
+      min-width: 100px;
+    }
+
+    .btn-oui {
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+      color: white;
+      box-shadow: 0 4px 15px rgba(245,87,108,0.4);
+    }
+    .btn-oui:hover { transform: scale(1.05); }
+
+    .btn-non {
+      background: white;
+      color: #f5576c;
+      border: 2px solid #f5576c;
+    }
+    .btn-non:hover { transform: scale(1.05); }
+
+    /* Écran final */
+    #screen4 {
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
+    }
+    .finale-emoji {
+      font-size: 5rem;
+      margin-bottom: 1rem;
+      animation: spin 1s ease-in-out;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg) scale(0); }
+      to { transform: rotate(360deg) scale(1); }
+    }
+
+    .overlay {
+      position: fixed; inset: 0;
+      background: white;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .overlay.active { opacity: 1; pointer-events: all; }
+  </style>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<!-- ÉCRAN 1 — Bonjour -->
+<div class="screen active" id="screen1">
+  <div class="card">
+    <div class="emoji-top">🌅</div>
+    <h1>Bonjour Madame Lamartine !</h1>
+    <p class="question">Vous avez bien dormi ?</p>
+    <div class="btn-group">
+      <button class="btn btn-oui" onclick="goTo(2, 'oui1')">Oui 😊</button>
+      <button class="btn btn-non" id="nonBtn1" onclick="moveNon('nonBtn1', 2, 'non1')">Non 😴</button>
+    </div>
+  </div>
+</div>
+
+<!-- ÉCRAN 2 — Rêvé de Trésor -->
+<div class="screen" id="screen2">
+  <div class="card">
+    <div class="emoji-top">😴</div>
+    <h1>Vous avez rêvé de Trésor<br>pendant votre sommeil ?</h1>
+    <p class="question">Avouez Madame Lamartine… 👀</p>
+    <div class="btn-group">
+      <button class="btn btn-oui" onclick="goTo(3, 'oui2')">Oui 😳</button>
+      <button class="btn btn-non" id="nonBtn2" onclick="moveNon('nonBtn2', 3, 'non2')">Non 🙅</button>
+    </div>
+  </div>
+</div>
+
+<!-- ÉCRAN 3 — Belle journée -->
+<div class="screen" id="screen3">
+  <div class="card">
+    <div class="emoji-top">☀️</div>
+    <h1>Passez une belle journée<br>Madame Lamartine !</h1>
+    <p class="question">Et pensez bien à Trésor aujourd'hui… 😄</p>
+    <div class="btn-group">
+      <button class="btn btn-oui" onclick="goTo(4, 'merci')">Merci 🥰</button>
+      <button class="btn btn-non" id="nonBtn3" onclick="moveNon('nonBtn3', 4, 'non3')">Hmm 🙄</button>
+    </div>
+  </div>
+</div>
+
+<!-- ÉCRAN 4 — Final -->
+<div class="screen" id="screen4">
+  <div class="card" style="background:rgba(255,255,255,0.5);">
+    <div class="finale-emoji">😂</div>
+    <h1>Bonne journée quand même<br>Madame Lamartine !</h1>
+    <p class="question">Passez une excellente journée ! ☀️</p>
+  </div>
+</div>
+
+<script>
+  const reponses = {
+    oui1: "Parfait ! Le sommeil c'est important 😄",
+    non1: "Ah… Trésor vous a peut-être manqué ? 😏",
+    oui2: "Vous voyez ! Trésor est inoubliable 😂",
+    non2: "Bien sûr que non… 👀 On vous croit !",
+    merci: "Avec plaisir Madame Lamartine 🌸",
+    non3: "La journée sera belle quand même ! ☀️"
+  };
+
+  function goTo(n, reponse) {
+    const overlay = document.getElementById('overlay');
+    overlay.classList.add('active');
+    setTimeout(() => {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      const next = document.getElementById('screen' + n);
+      next.classList.add('active');
+
+      // Ajouter la réponse en petit texte
+      if (reponse && reponses[reponse]) {
+        const existing = next.querySelector('.reponse-text');
+        if (!existing) {
+          const p = document.createElement('p');
+          p.className = 'reponse-text';
+          p.style.cssText = 'color:#888;font-size:0.8rem;margin-bottom:1rem;font-style:italic;';
+          p.textContent = reponses[reponse];
+          const card = next.querySelector('.card');
+          card.insertBefore(p, card.querySelector('h1'));
+        }
+      }
+
+      overlay.classList.remove('active');
+      // Reset boutons non
+      document.querySelectorAll('[id^=nonBtn]').forEach(b => {
+        b.style.position = '';
+        b.style.left = '';
+        b.style.top = '';
+        b.style.display = '';
+      });
+    }, 400);
+  }
+
+  let moveCounts = {};
+  function moveNon(btnId, nextScreen, reponse) {
+    if (!moveCounts[btnId]) moveCounts[btnId] = 0;
+    moveCounts[btnId]++;
+    const btn = document.getElementById(btnId);
+    const maxX = window.innerWidth - 120;
+    const maxY = window.innerHeight - 60;
+    btn.style.position = 'fixed';
+    btn.style.left = Math.max(10, Math.random() * maxX) + 'px';
+    btn.style.top = Math.max(10, Math.random() * maxY) + 'px';
+    btn.style.zIndex = 50;
+    if (moveCounts[btnId] >= 3) {
+      btn.style.display = 'none';
+      goTo(nextScreen, reponse);
+    }
+  }
+</script>
+</body>
+</html>
